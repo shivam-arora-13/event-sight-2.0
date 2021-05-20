@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import "package:flutter/services.dart";
 
 import "./screens/auth_screen.dart";
-import 'screens/student_nav_screen.dart';
+import './screens/nav_screens/student_nav_screen.dart';
 import "./screens/signup_screen.dart";
 
 void main() {
@@ -17,9 +17,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Event Sight',
-        // home: AuthScreen(),
-        // home: StudentNavScreen(),
-        home: SignUpScreen());
+      title: 'Event Sight',
+      // home: AuthScreen(),
+      routes: {
+        SignUpScreen.routeName: (ctx) => SignUpScreen(),
+      },
+      home: StudentNavScreen(),
+    );
   }
 }

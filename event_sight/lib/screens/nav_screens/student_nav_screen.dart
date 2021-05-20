@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
-import "./student_home_screen.dart";
+import '../student_home_screen.dart';
+import '../student_profile.dart';
 
 class StudentNavScreen extends StatefulWidget {
   @override
@@ -9,14 +10,23 @@ class StudentNavScreen extends StatefulWidget {
 
 class _StudentNavScreenState extends State<StudentNavScreen> {
   var _selectedIndex = 0;
+  final _pages = [
+    StudentHomeScreen(),
+    StudentHomeScreen(),
+    StudentHomeScreen(),
+    StudentProfile()
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(0, 38, 66, 1),
         title: Text("Event Sight"),
+        actions: _selectedIndex == 3
+            ? [IconButton(icon: Icon(Icons.edit), onPressed: () {})]
+            : null,
       ),
-      body: StudentHomeScreen(),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (i) {
@@ -31,9 +41,8 @@ class _StudentNavScreenState extends State<StudentNavScreen> {
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ""),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.app_registration), label: ""),
+          BottomNavigationBarItem(icon: Icon(Icons.event), label: ""),
+          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: ""),
         ],
       ),
