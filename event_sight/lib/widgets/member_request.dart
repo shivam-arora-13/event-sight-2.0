@@ -13,6 +13,9 @@ class MemberRequest extends StatelessWidget {
             children: [
               SizedBox(height: 20),
               UserProfilePicture(),
+              InfoTile(Icons.person, "Leonardo Di Caprio"),
+              InfoTile(Icons.info, "19103007"),
+              InfoTile(Icons.email, "shivamarora.bt19cse@pec.edu.in"),
             ],
           ),
           Container(
@@ -77,9 +80,30 @@ class InfoTile extends StatelessWidget {
   InfoTile(this.icon, this.info);
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(info),
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(
+            icon,
+            size: 25,
+            color: Color.fromRGBO(0, 38, 66, 1),
+          ),
+          title: Container(
+            height: 20,
+            width: double.infinity,
+            alignment: Alignment.centerLeft,
+            child: FittedBox(
+                child: Text(
+              info,
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black),
+            )),
+          ),
+        ),
+        Divider(),
+      ],
     );
   }
 }

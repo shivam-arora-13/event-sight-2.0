@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "../member_request_screen.dart";
+import "../admin_home_screen.dart";
 
 class AdminNavScreen extends StatefulWidget {
   @override
@@ -9,6 +10,11 @@ class AdminNavScreen extends StatefulWidget {
 
 class _AdminNavScreenState extends State<AdminNavScreen> {
   var _selectedIndex = 0;
+  final _pages = [
+    AdminHomeScreen(),
+    MemberRequestScreen(),
+    AdminHomeScreen(),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +22,7 @@ class _AdminNavScreenState extends State<AdminNavScreen> {
         backgroundColor: Color.fromRGBO(0, 38, 66, 1),
         title: Text("Club Name"),
       ),
-      body: MemberRequestScreen(),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (i) {
