@@ -103,7 +103,7 @@ class InfoTile extends StatelessWidget {
       ),
       title: Container(
         width: double.infinity,
-        height: 25,
+        height: 23,
         child: FittedBox(
           alignment: Alignment.centerLeft,
           child: Text(
