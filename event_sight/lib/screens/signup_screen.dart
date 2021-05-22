@@ -14,7 +14,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text("New User Signup"),
-          backgroundColor: Color.fromRGBO(0, 38, 66, 1),
         ),
         body: SingleChildScrollView(child: SignUpForm()));
   }

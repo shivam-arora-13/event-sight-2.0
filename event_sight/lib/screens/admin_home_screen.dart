@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "../widgets/home_screen_elements.dart";
+import "./event_screen.dart";
 
 class AdminHomeScreen extends StatefulWidget {
   @override
@@ -15,40 +16,53 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         margin: EdgeInsets.all(5),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(width: 5),
-                ClubLogo(
-                    "https://cdn.designrush.com/uploads/inspiration_images/4531/990__1511456189_555_McDonald's.png"),
-                SizedBox(width: 5),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Container(
+              height: MediaQuery.of(context).size.height * 0.27,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ClubStat(126, "Events"),
-                      ClubStat(346, "Members"),
-                      ClubStat(569, "Followers"),
+                      SizedBox(width: 5),
+                      ClubLogo(
+                          "https://cdn.designrush.com/uploads/inspiration_images/4531/990__1511456189_555_McDonald's.png"),
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ClubStat(126, "Events"),
+                            ClubStat(346, "Members"),
+                            ClubStat(569, "Followers"),
+                          ],
+                        ),
+                      )
                     ],
                   ),
-                )
-              ],
+                  ClubInfo(),
+                  ClubButtons(),
+                ],
+              ),
             ),
-            ClubInfo(),
-            ClubButtons(),
             Divider(),
             Container(
-              height: 400,
+              height: MediaQuery.of(context).size.height * 0.47,
               child: GridView(
                   children: [
                     ...List.generate(5, (index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black12)),
-                        width: 100,
-                        height: 100,
-                        child: Image.network(
-                            "https://venngage-wordpress-gallery.s3.amazonaws.com/uploads/2018/10/25.jpg"),
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(EventScreen.routeName);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black12)),
+                          width: 100,
+                          height: 100,
+                          child: Image.network(
+                              "https://venngage-wordpress-gallery.s3.amazonaws.com/uploads/2018/10/25.jpg"),
+                        ),
                       );
                     }),
                     ...List.generate(8, (index) {

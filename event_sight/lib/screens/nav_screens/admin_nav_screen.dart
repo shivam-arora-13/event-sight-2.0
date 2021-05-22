@@ -19,8 +19,8 @@ class _AdminNavScreenState extends State<AdminNavScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(0, 38, 66, 1),
         title: Text("Club Name"),
+        elevation: 0,
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(

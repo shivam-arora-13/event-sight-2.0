@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
+import "package:badges/badges.dart";
 
 import '../student_home_screen.dart';
 import '../student_profile.dart';
+import "../../widgets/notifications.dart";
 
 class StudentNavScreen extends StatefulWidget {
   @override
@@ -14,15 +16,15 @@ class _StudentNavScreenState extends State<StudentNavScreen> {
     StudentHomeScreen(),
     StudentHomeScreen(),
     StudentHomeScreen(),
-    StudentProfile()
+    Notifications(),
+    StudentProfile(),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(0, 38, 66, 1),
         title: Text("Event Sight"),
-        actions: _selectedIndex == 3
+        actions: _selectedIndex == 4
             ? [IconButton(icon: Icon(Icons.edit), onPressed: () {})]
             : null,
       ),
@@ -43,6 +45,16 @@ class _StudentNavScreenState extends State<StudentNavScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.event), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: ""),
+          BottomNavigationBarItem(
+              icon: Badge(
+                badgeColor: Color.fromRGBO(132, 0, 50, 1),
+                badgeContent: Text(
+                  "10",
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: Icon(Icons.notifications),
+              ),
+              label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: ""),
         ],
       ),
