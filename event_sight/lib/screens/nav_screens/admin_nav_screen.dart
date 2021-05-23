@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
 
-import "../member_request_screen.dart";
 import "../admin_home_screen.dart";
+import "../member_request_screen.dart";
+import "../../widgets/event_form.dart";
 
 class AdminNavScreen extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class _AdminNavScreenState extends State<AdminNavScreen> {
   final _pages = [
     AdminHomeScreen(),
     MemberRequestScreen(),
-    AdminHomeScreen(),
+    EventForm(),
   ];
   @override
   Widget build(BuildContext context) {

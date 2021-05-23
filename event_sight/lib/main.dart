@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Event Sight',
       //home: AuthScreen(),
-      home: StudentNavScreen(),
-      //home: AdminNavScreen(),
+      //home: StudentNavScreen(),
+      home: AdminNavScreen(),
       theme: ThemeData(
         primaryColor: Color.fromRGBO(0, 38, 66, 1),
       ),

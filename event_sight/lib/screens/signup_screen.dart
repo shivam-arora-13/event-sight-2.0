@@ -15,6 +15,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         appBar: AppBar(
           title: Text("New User Signup"),
         ),
-        body: SingleChildScrollView(child: SignUpForm()));
+        body: SingleChildScrollView(child: SignupForm()));
   }
 }
