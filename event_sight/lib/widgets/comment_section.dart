@@ -34,7 +34,7 @@ class _AddCommentState extends State<AddComment> {
   Widget build(BuildContext context) {
     return ListTile(
       leading: CircleAvatar(
-        radius: 25,
+        radius: 22,
         backgroundImage: NetworkImage(
             "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202105/gq-gal-gadot-accent.jpg?NrL3I.r683ECbshrlZvU0sIgZLE7AEnk&size=770:433"),
       ),

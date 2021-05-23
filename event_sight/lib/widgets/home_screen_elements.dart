@@ -109,19 +109,15 @@ class ClubInfo extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-              alignment: Alignment.centerLeft,
-              height: 20,
-              width: double.infinity,
-              child: FittedBox(
-                  child: Text(
-                "Art and Photography Club",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromRGBO(0, 38, 66, 1),
-                ),
-              ))),
+          Text(
+            "The Institution of Electronics and Telecommunication Engineers",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color.fromRGBO(0, 38, 66, 1),
+            ),
+          ),
+          SizedBox(height: 2),
           Text(
             "APC",
             style: TextStyle(

@@ -6,6 +6,7 @@ import "./screens/signup_screen.dart";
 import "./screens/event_screen.dart";
 import './screens/nav_screens/student_nav_screen.dart';
 import "./screens/nav_screens/admin_nav_screen.dart";
+import "./screens/organisers_list_screen.dart";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         SignUpScreen.routeName: (ctx) => SignUpScreen(),
-        EventScreen.routeName: (ctx) => EventScreen()
+        EventScreen.routeName: (ctx) => EventScreen(),
+        StudentNavScreen.routeName: (ctx) => StudentNavScreen(),
+        OrganisersListScreen.routeName: (ctx) => OrganisersListScreen()
       },
     );
   }

@@ -4,8 +4,10 @@ import "package:badges/badges.dart";
 import '../student_home_screen.dart';
 import '../student_profile.dart';
 import "../../widgets/notifications.dart";
+import "../../widgets/student_drawer.dart";
 
 class StudentNavScreen extends StatefulWidget {
+  static const routeName = "/student-nav-screen";
   @override
   _StudentNavScreenState createState() => _StudentNavScreenState();
 }
@@ -28,6 +30,7 @@ class _StudentNavScreenState extends State<StudentNavScreen> {
             ? [IconButton(icon: Icon(Icons.edit), onPressed: () {})]
             : null,
       ),
+      endDrawer: StudentDrawer(),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
