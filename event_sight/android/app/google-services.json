@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "963992928054",
+    "project_id": "event-sight",
+    "storage_bucket": "event-sight.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963992928054:android:ad50aa5b6ad8c06717bd97",
+        "android_client_info": {
+          "package_name": "com.example.event_sight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "963992928054-4bc5cp4urg1pto6rjsd7fnqhgkt1d7gj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAajDh2e61UW0DW-g5sRqIeOydpF9zgyfw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "963992928054-4bc5cp4urg1pto6rjsd7fnqhgkt1d7gj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
