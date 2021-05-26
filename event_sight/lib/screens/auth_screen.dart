@@ -1,12 +1,40 @@
 import "package:flutter/material.dart";
 import "../widgets/login_form.dart";
 
+import "package:firebase_auth/firebase_auth.dart";
+
 class AuthScreen extends StatefulWidget {
   @override
   _AuthScreenState createState() => _AuthScreenState();
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  var _isLoading = false;
+  final _auth = FirebaseAuth.instance;
+  void _onSubmit(String email, String password, BuildContext ctx) async {
+    UserCredential userCredential;
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+    } catch (err) {
+      var message = "Login Failed";
+      if (err.message != null) {
+        message = err.message;
+      }
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(ctx).errorColor,
+      ));
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +63,7 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             ),
             SizedBox(height: 20),
-            LoginForm()
+            LoginForm(_onSubmit, _isLoading)
           ],
         ),
         decoration: BoxDecoration(

@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "package:firebase_auth/firebase_auth.dart";
+
 import "../screens/nav_screens/student_nav_screen.dart";
 import "../screens/organisers_list_screen.dart";
 
@@ -33,7 +35,9 @@ class StudentDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout),
             title: Text("Logout"),
-            onTap: () {},
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+            },
           ),
         ],
       ),

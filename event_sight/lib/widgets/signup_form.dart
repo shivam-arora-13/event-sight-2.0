@@ -4,12 +4,56 @@ import "package:flutter/material.dart";
 import "package:image_picker/image_picker.dart";
 
 class SignupForm extends StatefulWidget {
+  final _submitForm;
+  final bool _isLoading;
+  SignupForm(this._submitForm, this._isLoading);
   @override
   _SignupFormState createState() => _SignupFormState();
 }
 
 class _SignupFormState extends State<SignupForm> {
   final _formKey = GlobalKey<FormState>();
+  var showPassword = false;
+  var showConfirmPassword = false;
+  String _sid = "";
+  String _name = "";
+  String _email = "";
+  String _password = "";
+  String confirmPassword = "";
+  File _userImage;
+  void receiveImage(File image) {
+    _userImage = image;
+  }
+
+  void _trySubmit() {
+    if (_userImage == null) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+          content: Text("Select a Display picture")));
+      return;
+    }
+    final isValid = _formKey.currentState.validate();
+    FocusScope.of(context).unfocus();
+    if (isValid && _userImage != null) {
+      widget._submitForm(
+        _email.trim(),
+        _password.trim(),
+        _name.trim(),
+        _sid.trim(),
+        _userImage,
+        context,
+      );
+    }
+  }
+
+  final sidController = TextEditingController();
+  final nameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,6 +79,17 @@ class _SignupFormState extends State<SignupForm> {
                   child: Column(
                     children: [
                       TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: sidController,
+                        onChanged: (value) {
+                          _sid = value;
+                        },
+                        validator: (value) {
+                          if (value.trim().length != 8) {
+                            return "Enter a valid SID";
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                           labelText: 'SID',
                           prefixIcon: Icon(Icons.fingerprint_outlined),
@@ -46,6 +101,16 @@ class _SignupFormState extends State<SignupForm> {
                         height: 10,
                       ),
                       TextFormField(
+                        controller: nameController,
+                        onChanged: (value) {
+                          _name = value;
+                        },
+                        validator: (value) {
+                          if (value.trim().length == 0) {
+                            return "Enter your Name";
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.perm_identity),
                           labelText: 'Name',
@@ -57,6 +122,17 @@ class _SignupFormState extends State<SignupForm> {
                         height: 10,
                       ),
                       TextFormField(
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: (value) {
+                          _email = value;
+                        },
+                        validator: (value) {
+                          if (value.trim().length == 0) {
+                            return "Enter your Email Address";
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.email),
                           labelText: 'Email Address',
@@ -68,9 +144,31 @@ class _SignupFormState extends State<SignupForm> {
                         height: 10,
                       ),
                       TextFormField(
+                        obscureText: !showPassword,
+                        controller: passwordController,
+                        onChanged: (value) {
+                          _password = value;
+                        },
+                        validator: (value) {
+                          if (value.trim().length < 8) {
+                            return "minimum length : 8 characters";
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.vpn_key),
-                          suffixIcon: Icon(Icons.remove_red_eye_outlined),
+                          suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  showPassword = !showPassword;
+                                });
+                              },
+                              child: Icon(
+                                Icons.remove_red_eye_outlined,
+                                color: showPassword
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.grey,
+                              )),
                           labelText: 'Password',
                           border: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.teal)),
@@ -80,31 +178,58 @@ class _SignupFormState extends State<SignupForm> {
                         height: 10,
                       ),
                       TextFormField(
+                        controller: confirmPasswordController,
+                        onChanged: (value) {
+                          confirmPassword = value;
+                        },
+                        validator: (value) {
+                          if (value != _password) {
+                            return "Password doesn't match";
+                          }
+                          return null;
+                        },
+                        obscureText: !showConfirmPassword,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.vpn_key_outlined),
-                          suffixIcon: Icon(Icons.remove_red_eye_outlined),
+                          suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  showConfirmPassword = !showConfirmPassword;
+                                });
+                              },
+                              child: Icon(
+                                Icons.remove_red_eye_outlined,
+                                color: showConfirmPassword
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.grey,
+                              )),
                           labelText: 'Confirm Password',
                           border: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.teal)),
                         ),
                       ),
                       SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: RaisedButton(
-                          child: Text("Submit"),
-                          color: Color.fromRGBO(229, 149, 0, 1),
-                          textColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(30)),
-                          onPressed: () {},
-                        ),
-                      )
+                      widget._isLoading
+                          ? CircularProgressIndicator(
+                              backgroundColor: Color.fromRGBO(229, 149, 0, 1),
+                            )
+                          : Container(
+                              width: double.infinity,
+                              child: RaisedButton(
+                                child: Text("Submit"),
+                                color: Color.fromRGBO(229, 149, 0, 1),
+                                textColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        new BorderRadius.circular(30)),
+                                onPressed: _trySubmit,
+                              ),
+                            )
                     ],
                   ),
                 ),
               ),
-              Positioned(top: -30, child: DisplayPicturePicker()),
+              Positioned(top: -30, child: DisplayPicturePicker(receiveImage)),
             ],
           ),
         ),
@@ -114,6 +239,8 @@ class _SignupFormState extends State<SignupForm> {
 }
 
 class DisplayPicturePicker extends StatefulWidget {
+  final Function _submitImage;
+  DisplayPicturePicker(this._submitImage);
   @override
   _DisplayPicturePickerState createState() => _DisplayPicturePickerState();
 }
@@ -128,9 +255,11 @@ class _DisplayPicturePickerState extends State<DisplayPicturePicker> {
     if (imageFile == null) {
       return;
     }
+
     setState(() {
       pickedImage = File(imageFile.path);
     });
+    widget._submitImage(pickedImage);
   }
 
   @override
@@ -141,6 +270,14 @@ class _DisplayPicturePickerState extends State<DisplayPicturePicker> {
         children: [
           CircleAvatar(
             radius: 40,
+            backgroundColor: Color.fromRGBO(229, 149, 0, 1),
+            child: pickedImage == null
+                ? Icon(
+                    Icons.person,
+                    size: 50,
+                    color: Colors.white,
+                  )
+                : null,
             backgroundImage:
                 pickedImage == null ? null : FileImage(pickedImage),
           ),
