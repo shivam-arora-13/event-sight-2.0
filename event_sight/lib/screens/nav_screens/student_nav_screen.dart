@@ -4,7 +4,7 @@ import "package:badges/badges.dart";
 import '../student_home_screen.dart';
 import '../student_profile.dart';
 import "../../widgets/notifications.dart";
-import "../../widgets/student_drawer.dart";
+import '../../widgets/drawers/student_drawer.dart';
 
 class StudentNavScreen extends StatefulWidget {
   static const routeName = "/student-nav-screen";
@@ -13,25 +13,22 @@ class StudentNavScreen extends StatefulWidget {
 }
 
 class _StudentNavScreenState extends State<StudentNavScreen> {
-  var _selectedIndex = 0;
+  int _selectedIndex = 0;
   final _pages = [
-    StudentHomeScreen(),
-    StudentHomeScreen(),
-    StudentHomeScreen(),
-    Notifications(),
-    StudentProfile(),
+    {"page": StudentHomeScreen(), "title": "Event Sight"},
+    {"page": StudentHomeScreen(), "title": ""},
+    {"page": StudentHomeScreen(), "title": ""},
+    {"page": Notifications(), "title": ""},
+    {"page": StudentProfile(), "title": "User Profile"},
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Event Sight"),
-        actions: _selectedIndex == 4
-            ? [IconButton(icon: Icon(Icons.edit), onPressed: () {})]
-            : null,
+        title: Text(_pages[_selectedIndex]["title"]),
       ),
       endDrawer: StudentDrawer(),
-      body: _pages[_selectedIndex],
+      body: _pages[_selectedIndex]["page"],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (i) {

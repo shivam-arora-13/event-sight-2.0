@@ -22,9 +22,9 @@ class _MemberRequestScreenState extends State<MemberRequestScreen> {
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
-          MemberRequest(),
-          MemberRequest(),
-          MemberRequest(),
+          // MemberRequest(),
+          // MemberRequest(),
+          // MemberRequest(),
         ],
       ),
     );

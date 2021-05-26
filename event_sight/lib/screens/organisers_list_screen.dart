@@ -1,6 +1,4 @@
 import "package:flutter/material.dart";
-
-import "../widgets/student_drawer.dart";
 import "../widgets/organiser_tile.dart";
 
 class OrganisersListScreen extends StatefulWidget {
@@ -17,7 +15,6 @@ class _OrganisersListScreenState extends State<OrganisersListScreen> {
         title: Text("Organisers"),
         elevation: 0,
       ),
-      endDrawer: StudentDrawer(),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

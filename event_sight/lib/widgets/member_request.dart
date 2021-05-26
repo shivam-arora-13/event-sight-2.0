@@ -18,7 +18,7 @@ class MemberRequest extends StatelessWidget {
             Column(
               children: [
                 SizedBox(height: 20),
-                UserProfilePicture(),
+                UserProfilePicture(""),
                 InfoTile(Icons.person, "Leonardo Di Caprio"),
                 InfoTile(Icons.info, "19103007"),
                 InfoTile(Icons.email, "shivamarora.bt19cse@pec.edu.in"),

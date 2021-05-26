@@ -1,3 +1,5 @@
+import "dart:io";
+
 import "package:flutter/material.dart";
 import "./event_form_components.dart";
 
@@ -12,6 +14,14 @@ class _EventFormState extends State<EventForm> {
   int _index = 0;
   EventType _type = EventType.General;
   final _formKey = GlobalKey<FormState>();
+  var title = "";
+  var description = "";
+  var details = "";
+  var date;
+  var time;
+  File eventPoster;
+  bool open_to_all;
+
   @override
   Widget build(BuildContext context) {
     return Form(

@@ -1,4 +1,8 @@
 import "package:flutter/material.dart";
+import "package:firebase_auth/firebase_auth.dart";
+import "package:cloud_firestore/cloud_firestore.dart";
+
+import "./edit_student_profile_screen.dart";
 
 class StudentProfile extends StatefulWidget {
   @override
@@ -6,85 +10,137 @@ class StudentProfile extends StatefulWidget {
 }
 
 class _StudentProfileState extends State<StudentProfile> {
-  var _index = 0;
+  final _auth = FirebaseAuth.instance;
+  var userData = null;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(229, 218, 218, 0.5),
-      body: Container(
-        color: Colors.white,
-        margin: EdgeInsets.all(10),
-        padding: EdgeInsets.all(10),
-        alignment: Alignment.center,
-        child: Column(
+    return FutureBuilder(
+        future: FirebaseFirestore.instance
+            .collection("students")
+            .where("id", isEqualTo: _auth.currentUser.uid)
+            .get(),
+        builder: (context, userSnapshot) {
+          if (userSnapshot.data != null) {
+            userData = userSnapshot.data.docs[0];
+          }
+
+          return userSnapshot.connectionState != ConnectionState.done
+              ? Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                )
+              : Scaffold(
+                  floatingActionButton: Container(
+                      width: 55,
+                      height: 55,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color.fromRGBO(229, 149, 0, 1),
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          color: Theme.of(context).primaryColor,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamed(EditStudentProfile.routeName);
+                        },
+                      )),
+                  body: SingleChildScrollView(
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10),
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          UserProfilePicture(userData["image_url"]),
+                          SizedBox(height: 10),
+                          Divider(),
+                          InfoTile(userData["name"], Icons.person),
+                          Divider(),
+                          InfoTile(userData["sid"], Icons.info),
+                          Divider(),
+                          InfoTile(userData["email"], Icons.email),
+                          Divider(),
+                          SizedBox(height: 20),
+                          UserClubs(),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+        });
+  }
+}
+
+class UserClubs extends StatefulWidget {
+  @override
+  _UserClubsState createState() => _UserClubsState();
+}
+
+class _UserClubsState extends State<UserClubs> {
+  var _index = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            UserProfilePicture(),
-            SizedBox(height: 10),
-            Divider(),
-            InfoTile("Leonardo Di Caprio", Icons.person),
-            Divider(),
-            InfoTile("19103007", Icons.info),
-            Divider(),
-            InfoTile("shivamarora.bt19cse@pec.edu.in", Icons.email),
-            Divider(),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: FlatButton(
-                      onPressed: () {
-                        setState(() {
-                          _index = 0;
-                        });
-                      },
-                      child: Text(
-                        "Member At",
-                        style: TextStyle(
-                            decoration:
-                                _index == 0 ? TextDecoration.underline : null,
-                            fontSize: 18,
-                            color: _index == 0
-                                ? Color.fromRGBO(0, 38, 66, 1)
-                                : Colors.grey),
-                      )),
-                ),
-                Container(
-                  width: 0.5,
-                  height: 30,
-                  color: Colors.grey,
-                ),
-                SizedBox(
-                  width: 130,
-                  child: FlatButton(
-                      onPressed: () {
-                        setState(() {
-                          _index = 1;
-                        });
-                      },
-                      child: Text(
-                        "Follows",
-                        style: TextStyle(
-                            decoration:
-                                _index == 1 ? TextDecoration.underline : null,
-                            fontSize: 18,
-                            color: _index == 1
-                                ? Color.fromRGBO(0, 38, 66, 1)
-                                : Colors.grey),
-                      )),
-                ),
-              ],
+            SizedBox(
+              width: 130,
+              child: FlatButton(
+                  onPressed: () {
+                    setState(() {
+                      _index = 0;
+                    });
+                  },
+                  child: Text(
+                    "Member At",
+                    style: TextStyle(
+                        decoration:
+                            _index == 0 ? TextDecoration.underline : null,
+                        fontSize: 18,
+                        color: _index == 0
+                            ? Color.fromRGBO(0, 38, 66, 1)
+                            : Colors.grey),
+                  )),
             ),
-            Divider(
-              height: 10,
-              color: Colors.black,
+            Container(
+              width: 0.5,
+              height: 30,
+              color: Colors.grey,
             ),
-            if (_index == 0) Text("List Of Membership clubs"),
-            if (_index == 1) Text("List Of Following clubs")
+            SizedBox(
+              width: 130,
+              child: FlatButton(
+                  onPressed: () {
+                    setState(() {
+                      _index = 1;
+                    });
+                  },
+                  child: Text(
+                    "Follows",
+                    style: TextStyle(
+                        decoration:
+                            _index == 1 ? TextDecoration.underline : null,
+                        fontSize: 18,
+                        color: _index == 1
+                            ? Color.fromRGBO(0, 38, 66, 1)
+                            : Colors.grey),
+                  )),
+            ),
           ],
         ),
-      ),
+        Divider(
+          height: 10,
+          color: Colors.black,
+        ),
+        if (_index == 0) Text("List Of Membership clubs"),
+        if (_index == 1) Text("List Of Following clubs")
+      ],
     );
   }
 }
@@ -119,6 +175,8 @@ class InfoTile extends StatelessWidget {
 }
 
 class UserProfilePicture extends StatelessWidget {
+  final imgUrl;
+  UserProfilePicture(this.imgUrl);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -141,8 +199,8 @@ class UserProfilePicture extends StatelessWidget {
         decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),
         child: CircleAvatar(
           radius: 48,
-          backgroundImage: NetworkImage(
-              "https://resizing.flixster.com/eSrEPooElA53YIe489a-xQqHp-E=/506x652/v2/https://flxt.tmsimg.com/v9/AllPhotos/435/435_v9_bc.jpg"),
+          backgroundImage: NetworkImage(imgUrl),
+          backgroundColor: Colors.grey,
         ),
       ),
     );

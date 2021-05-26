@@ -1,9 +1,7 @@
 import "package:flutter/material.dart";
-
+import "package:shared_preferences/shared_preferences.dart";
 import "package:firebase_auth/firebase_auth.dart";
-
-import "../screens/nav_screens/student_nav_screen.dart";
-import "../screens/organisers_list_screen.dart";
+import '../../screens/organisers_list_screen.dart';
 
 class StudentDrawer extends StatelessWidget {
   @override
@@ -17,19 +15,11 @@ class StudentDrawer extends StatelessWidget {
             color: Theme.of(context).primaryColor,
           ),
           ListTile(
-            leading: Icon(Icons.home),
-            title: Text("Home"),
-            onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(StudentNavScreen.routeName);
-            },
-          ),
-          ListTile(
             leading: Icon(Icons.grid_view),
             title: Text("Organisers"),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(OrganisersListScreen.routeName);
+              Navigator.of(context).pop();
+              Navigator.of(context).pushNamed(OrganisersListScreen.routeName);
             },
           ),
           ListTile(
@@ -37,6 +27,8 @@ class StudentDrawer extends StatelessWidget {
             title: Text("Logout"),
             onTap: () async {
               await FirebaseAuth.instance.signOut();
+              final prefs = await SharedPreferences.getInstance();
+              prefs.remove("role");
             },
           ),
         ],

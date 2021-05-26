@@ -1,6 +1,6 @@
 import "dart:io";
 import "package:flutter/material.dart";
-
+import "package:shared_preferences/shared_preferences.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:firebase_storage/firebase_storage.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
@@ -63,6 +63,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         "image_url": url,
         "id": userCredential.user.uid
       });
+      //save role
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString("role", "student");
+
       setState(() {
         _isLoading = false;
       });

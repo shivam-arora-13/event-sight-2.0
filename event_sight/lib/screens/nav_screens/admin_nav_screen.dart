@@ -4,6 +4,8 @@ import "../admin_home_screen.dart";
 import "../member_request_screen.dart";
 import "../../widgets/event_form.dart";
 
+import "../../widgets/drawers/admin_drawer.dart";
+
 class AdminNavScreen extends StatefulWidget {
   @override
   _AdminNavScreenState createState() => _AdminNavScreenState();
@@ -12,18 +14,19 @@ class AdminNavScreen extends StatefulWidget {
 class _AdminNavScreenState extends State<AdminNavScreen> {
   var _selectedIndex = 0;
   final _pages = [
-    AdminHomeScreen(),
-    MemberRequestScreen(),
-    EventForm(),
+    {"page": AdminHomeScreen(), "title": ""},
+    {"page": MemberRequestScreen(), "title": ""},
+    {"page": EventForm(), "title": "Add New Event"},
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Club Name"),
+        title: Text(_pages[_selectedIndex]["title"]),
         elevation: 0,
       ),
-      body: _pages[_selectedIndex],
+      endDrawer: AdminDrawer(),
+      body: _pages[_selectedIndex]["page"],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (i) {

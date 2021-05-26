@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import "package:flutter/services.dart";
-
+import "package:shared_preferences/shared_preferences.dart";
 import "package:firebase_core/firebase_core.dart";
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -10,6 +10,7 @@ import "./screens/event_screen.dart";
 import './screens/nav_screens/student_nav_screen.dart';
 import "./screens/nav_screens/admin_nav_screen.dart";
 import "./screens/organisers_list_screen.dart";
+import "./screens/edit_student_profile_screen.dart";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +40,21 @@ class MyApp extends StatelessWidget {
                     );
                   }
                   if (userSnapShot.hasData) {
-                    return StudentNavScreen();
+                    //return StudentNavScreen();
+                    return FutureBuilder(
+                        builder: (ctx, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return snapshot.data.getString("role") == "student"
+                                ? StudentNavScreen()
+                                : AdminNavScreen();
+                          } else {
+                            return Scaffold(
+                              body: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+                        },
+                        future: SharedPreferences.getInstance());
                   } else {
                     return AuthScreen();
                   }
@@ -51,7 +66,8 @@ class MyApp extends StatelessWidget {
           SignUpScreen.routeName: (ctx) => SignUpScreen(),
           EventScreen.routeName: (ctx) => EventScreen(),
           StudentNavScreen.routeName: (ctx) => StudentNavScreen(),
-          OrganisersListScreen.routeName: (ctx) => OrganisersListScreen()
+          OrganisersListScreen.routeName: (ctx) => OrganisersListScreen(),
+          EditStudentProfile.routeName: (ctx) => EditStudentProfile()
         },
       ),
     );
