@@ -1,6 +1,18 @@
 import "package:flutter/material.dart";
 
 class OrganiserTile extends StatelessWidget {
+  final name;
+  final description;
+  final image_url;
+  final no_of_followers;
+  final no_of_members;
+  OrganiserTile(
+    this.name,
+    this.description,
+    this.image_url,
+    this.no_of_followers,
+    this.no_of_members,
+  );
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,15 +33,22 @@ class OrganiserTile extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("Art and Photography Club"),
-                        Text("APC"),
+                        Text(
+                          name,
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15),
+                        ),
+                        Text(description,
+                            style: TextStyle(color: Colors.black87)),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text("393 Members"),
-                        Text("897 Followers"),
+                        Text("$no_of_members Members"),
+                        Text("$no_of_followers Followers"),
                       ],
                     )
                   ],
@@ -42,7 +61,7 @@ class OrganiserTile extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(33),
                   child: Image.network(
-                    "https://cdn.designrush.com/uploads/inspiration_images/4531/990__1511456189_555_McDonald's.png",
+                    image_url,
                     fit: BoxFit.cover,
                   ),
                 ),

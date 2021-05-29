@@ -1,89 +1,156 @@
 import "package:flutter/material.dart";
+import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_auth/firebase_auth.dart";
 
 import "../widgets/home_screen_elements.dart";
 import "./event_screen.dart";
 
 class AdminHomeScreen extends StatefulWidget {
+  static const routeName = "/admin-home";
+  final isAdmin;
+  AdminHomeScreen(this.isAdmin);
   @override
   _AdminHomeScreenState createState() => _AdminHomeScreenState();
 }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
+  var shouldLoad = false;
+  var organiserId;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!widget.isAdmin) {
+      organiserId = ModalRoute.of(context).settings.arguments as String;
+    }
+  }
+
+  var flag = false;
+  void triggerChange() {
+    setState(() {
+      flag = !flag;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: EdgeInsets.all(5),
-        child: Column(
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.30,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(width: 5),
-                      ClubLogo(
-                          "https://cdn.designrush.com/uploads/inspiration_images/4531/990__1511456189_555_McDonald's.png"),
-                      SizedBox(width: 5),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ClubStat(126, "Events"),
-                            ClubStat(346, "Members"),
-                            ClubStat(569, "Followers"),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  ClubInfo(),
-                  ClubButtons(),
-                ],
+    return FutureBuilder(
+        future: FirebaseFirestore.instance
+            .collection("organisers")
+            .doc(widget.isAdmin
+                ? FirebaseAuth.instance.currentUser.uid
+                : organiserId)
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          var organiserData = snapshot.data;
+          return Scaffold(
+            appBar: widget.isAdmin
+                ? null
+                : AppBar(title: Text(organiserData["name"])),
+            body: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Container(
+                      height: widget.isAdmin
+                          ? MediaQuery.of(context).size.height * 0.22
+                          : MediaQuery.of(context).size.height * 0.30,
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(width: 5),
+                              ClubLogo(organiserData["image_url"]),
+                              SizedBox(width: 5),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ClubStat(organiserData["members"].length,
+                                        "Members"),
+                                    ClubStat(organiserData["followers"].length,
+                                        "Followers"),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                          ClubInfo(
+                            organiserData["name"],
+                            organiserData["description"],
+                          ),
+                          if (!widget.isAdmin)
+                            ClubButtons(
+                                organiserData["id"],
+                                organiserData["followers"],
+                                organiserData["members"],
+                                triggerChange),
+                        ],
+                      ),
+                    ),
+                    Divider(),
+                    Container(
+                      height: widget.isAdmin
+                          ? MediaQuery.of(context).size.height * 0.55
+                          : MediaQuery.of(context).size.height * 0.50,
+                      child: FutureBuilder(
+                          future: FirebaseFirestore.instance
+                              .collection("events")
+                              .where("organiser",
+                                  isEqualTo: widget.isAdmin
+                                      ? FirebaseAuth.instance.currentUser.uid
+                                      : organiserId)
+                              .get(),
+                          builder: (ctx, eventsSnapshot) {
+                            if (eventsSnapshot.connectionState !=
+                                ConnectionState.done) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+
+                            var events =
+                                eventsSnapshot.data.docs as List<dynamic>;
+
+                            if (events.isEmpty) {
+                              return Center(child: Text("No events to show"));
+                            }
+                            return GridView(
+                                children: events.map((event) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                          EventScreen.routeName,
+                                          arguments: event.id);
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.black12)),
+                                      width: 100,
+                                      height: 100,
+                                      child: Image.network(event["poster_url"]),
+                                    ),
+                                  );
+                                }).toList(),
+                                gridDelegate:
+                                    SliverGridDelegateWithMaxCrossAxisExtent(
+                                        maxCrossAxisExtent: 150,
+                                        childAspectRatio: 1,
+                                        crossAxisSpacing: 5,
+                                        mainAxisSpacing: 5));
+                          }),
+                    )
+                  ],
+                ),
               ),
             ),
-            Divider(),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.47,
-              child: GridView(
-                  children: [
-                    ...List.generate(5, (index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(EventScreen.routeName);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black12)),
-                          width: 100,
-                          height: 100,
-                          child: Image.network(
-                              "https://venngage-wordpress-gallery.s3.amazonaws.com/uploads/2018/10/25.jpg"),
-                        ),
-                      );
-                    }),
-                    ...List.generate(8, (index) {
-                      return Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black12)),
-                          width: 100,
-                          height: 100,
-                          child: Image.network(
-                              "https://image.freepik.com/free-vector/music-event-poster-template-with-colorful-shapes_1361-1591.jpg"));
-                    })
-                  ],
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 150,
-                      childAspectRatio: 1,
-                      crossAxisSpacing: 5,
-                      mainAxisSpacing: 5)),
-            )
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 }

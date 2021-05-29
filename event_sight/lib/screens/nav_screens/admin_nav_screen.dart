@@ -7,26 +7,30 @@ import "../../widgets/event_form.dart";
 import "../../widgets/drawers/admin_drawer.dart";
 
 class AdminNavScreen extends StatefulWidget {
+  static const routeName = "/admin";
+  final isAdmin;
+  AdminNavScreen(this.isAdmin);
   @override
   _AdminNavScreenState createState() => _AdminNavScreenState();
 }
 
 class _AdminNavScreenState extends State<AdminNavScreen> {
   var _selectedIndex = 0;
-  final _pages = [
-    {"page": AdminHomeScreen(), "title": ""},
-    {"page": MemberRequestScreen(), "title": ""},
-    {"page": EventForm(), "title": "Add New Event"},
-  ];
+
   @override
   Widget build(BuildContext context) {
+    var pages = [
+      {"page": AdminHomeScreen(widget.isAdmin), "title": "Event Sight"},
+      {"page": MemberRequestScreen(), "title": "Member Requests"},
+      {"page": EventForm(), "title": "Add New Event"},
+    ];
     return Scaffold(
       appBar: AppBar(
-        title: Text(_pages[_selectedIndex]["title"]),
+        title: Text(pages[_selectedIndex]["title"]),
         elevation: 0,
       ),
       endDrawer: AdminDrawer(),
-      body: _pages[_selectedIndex]["page"],
+      body: pages[_selectedIndex]["page"],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (i) {

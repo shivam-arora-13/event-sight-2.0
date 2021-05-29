@@ -21,10 +21,17 @@ class _AuthScreenState extends State<AuthScreen> {
       setState(() {
         _isLoading = true;
       });
-      userCredential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      final studentData = await FirebaseFirestore.instance
+          .collection("students")
+          .where("email", isEqualTo: email)
+          .get();
+      if (studentData.docs.isEmpty) {
+        throw FormatException("Account does not exists");
+      }
       final prefs = await SharedPreferences.getInstance();
       prefs.setString("role", "student");
+      userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
     } catch (err) {
       var message = "Login Failed";
       if (err.message != null) {
@@ -54,10 +61,10 @@ class _AuthScreenState extends State<AuthScreen> {
       if (clubData.docs.isEmpty) {
         throw FormatException("Organiser does not exists");
       }
-      userCredential = await _auth.signInWithEmailAndPassword(
-          email: clubData.docs[0]["email"], password: password);
       final prefs = await SharedPreferences.getInstance();
       prefs.setString("role", "admin");
+      userCredential = await _auth.signInWithEmailAndPassword(
+          email: clubData.docs[0]["email"], password: password);
     } catch (err) {
       var message = "Login Failed";
       if (err.message != null) {

@@ -44,6 +44,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           throw FormatException("SID Already exists");
         }
       });
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString("role", "student");
       //Firebase authentication
       userCredential = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -64,8 +66,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         "id": userCredential.user.uid
       });
       //save role
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString("role", "student");
 
       setState(() {
         _isLoading = false;

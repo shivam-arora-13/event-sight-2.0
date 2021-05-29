@@ -94,7 +94,7 @@ class _AdminLoginFormState extends State<AdminLoginForm> {
               },
               controller: passwordController,
               validator: (value) {
-                if (value.length < 8) {
+                if (value.trim().length < 8) {
                   return "minimum length : 8 characters";
                 }
                 return null;

@@ -11,6 +11,7 @@ import './screens/nav_screens/student_nav_screen.dart';
 import "./screens/nav_screens/admin_nav_screen.dart";
 import "./screens/organisers_list_screen.dart";
 import "./screens/edit_student_profile_screen.dart";
+import "./screens/admin_home_screen.dart";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
+    bool isAdmin;
     return FutureBuilder(
       future: _initialization,
       builder: (ctx, appSnapshot) => MaterialApp(
@@ -45,9 +47,11 @@ class MyApp extends StatelessWidget {
                         builder: (ctx, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.done) {
+                            isAdmin =
+                                !(snapshot.data.getString("role") == "student");
                             return snapshot.data.getString("role") == "student"
                                 ? StudentNavScreen()
-                                : AdminNavScreen();
+                                : AdminNavScreen(isAdmin);
                           } else {
                             return Scaffold(
                               body: Center(child: CircularProgressIndicator()),
@@ -64,10 +68,12 @@ class MyApp extends StatelessWidget {
         ),
         routes: {
           SignUpScreen.routeName: (ctx) => SignUpScreen(),
-          EventScreen.routeName: (ctx) => EventScreen(),
+          EventScreen.routeName: (ctx) => EventScreen(isAdmin),
           StudentNavScreen.routeName: (ctx) => StudentNavScreen(),
           OrganisersListScreen.routeName: (ctx) => OrganisersListScreen(),
-          EditStudentProfile.routeName: (ctx) => EditStudentProfile()
+          EditStudentProfile.routeName: (ctx) => EditStudentProfile(),
+          AdminNavScreen.routeName: (ctx) => AdminNavScreen(isAdmin),
+          AdminHomeScreen.routeName: (ctx) => AdminHomeScreen(isAdmin)
         },
       ),
     );

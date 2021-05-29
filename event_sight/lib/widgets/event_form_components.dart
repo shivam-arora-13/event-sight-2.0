@@ -4,6 +4,8 @@ import "package:flutter/material.dart";
 import "package:image_picker/image_picker.dart";
 
 class DateTimePicker extends StatefulWidget {
+  final _submit;
+  DateTimePicker(this._submit);
   @override
   _DateTimePickerState createState() => _DateTimePickerState();
 }
@@ -31,6 +33,9 @@ class _DateTimePickerState extends State<DateTimePicker> {
               setState(() {
                 _selectedDate = pickedDate;
               });
+              if (_selectedDate != null && _selectedTime != null) {
+                widget._submit(_selectedDate, _selectedTimeString);
+              }
             });
           },
           icon: Icon(Icons.calendar_today),
@@ -52,6 +57,9 @@ class _DateTimePickerState extends State<DateTimePicker> {
                 _selectedTime = pickedTime;
                 _selectedTimeString = formattedTimeOfDay;
               });
+              if (_selectedDate != null && _selectedTime != null) {
+                widget._submit(_selectedDate, _selectedTime);
+              }
             });
           },
           icon: Icon(Icons.watch),
@@ -64,6 +72,8 @@ class _DateTimePickerState extends State<DateTimePicker> {
 }
 
 class ImagePickWidget extends StatefulWidget {
+  final _submitImage;
+  ImagePickWidget(this._submitImage);
   @override
   _ImagePickWidgetState createState() => _ImagePickWidgetState();
 }
@@ -80,6 +90,7 @@ class _ImagePickWidgetState extends State<ImagePickWidget> {
     setState(() {
       _storedImage = File(imageFile.path);
     });
+    widget._submitImage(_storedImage);
   }
 
   @override
