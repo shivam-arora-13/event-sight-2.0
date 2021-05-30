@@ -16,7 +16,6 @@ class _EventScreenState extends State<EventScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     eventId = ModalRoute.of(context).settings.arguments as String;
-    print(eventId);
   }
 
   @override

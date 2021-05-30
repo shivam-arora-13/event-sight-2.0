@@ -10,7 +10,6 @@ import "./screens/event_screen.dart";
 import './screens/nav_screens/student_nav_screen.dart';
 import "./screens/nav_screens/admin_nav_screen.dart";
 import "./screens/organisers_list_screen.dart";
-import "./screens/edit_student_profile_screen.dart";
 import "./screens/admin_home_screen.dart";
 
 void main() {
@@ -71,7 +70,6 @@ class MyApp extends StatelessWidget {
           EventScreen.routeName: (ctx) => EventScreen(isAdmin),
           StudentNavScreen.routeName: (ctx) => StudentNavScreen(),
           OrganisersListScreen.routeName: (ctx) => OrganisersListScreen(),
-          EditStudentProfile.routeName: (ctx) => EditStudentProfile(),
           AdminNavScreen.routeName: (ctx) => AdminNavScreen(isAdmin),
           AdminHomeScreen.routeName: (ctx) => AdminHomeScreen(isAdmin)
         },

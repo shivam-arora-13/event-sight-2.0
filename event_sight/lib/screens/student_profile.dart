@@ -2,8 +2,6 @@ import "package:flutter/material.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 
-import "./edit_student_profile_screen.dart";
-
 class StudentProfile extends StatefulWidget {
   @override
   _StudentProfileState createState() => _StudentProfileState();
@@ -29,24 +27,6 @@ class _StudentProfileState extends State<StudentProfile> {
                   body: Center(child: CircularProgressIndicator()),
                 )
               : Scaffold(
-                  floatingActionButton: Container(
-                      width: 55,
-                      height: 55,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color.fromRGBO(229, 149, 0, 1),
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.edit,
-                          color: Theme.of(context).primaryColor,
-                          size: 30,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed(EditStudentProfile.routeName);
-                        },
-                      )),
                   body: SingleChildScrollView(
                     child: Container(
                       margin: EdgeInsets.all(10),

@@ -105,6 +105,10 @@ class _EventFormState extends State<EventForm> {
               .child(title + date.toString() + ".jpg");
           await ref.putFile(eventPoster);
           final url = await ref.getDownloadURL();
+          final organiser = await FirebaseFirestore.instance
+              .collection("organisers")
+              .doc(FirebaseAuth.instance.currentUser.uid)
+              .get();
           await FirebaseFirestore.instance.collection("events").add({
             "title": title,
             "description": description,
@@ -114,7 +118,9 @@ class _EventFormState extends State<EventForm> {
             "date": (date as DateTime).toIso8601String(),
             "time": (time as TimeOfDay).toString(),
             "organiser": FirebaseAuth.instance.currentUser.uid,
-            "doc": Timestamp.now()
+            "doc": Timestamp.now(),
+            "organiser_name": organiser["name"],
+            "organiser_img": organiser["image_url"],
           });
           setState(() {
             loading = false;
@@ -132,10 +138,7 @@ class _EventFormState extends State<EventForm> {
                         child: Text("back")),
                   ],
                 );
-              }).then((val) {
-            Navigator.of(context)
-                .pushReplacementNamed(AdminNavScreen.routeName);
-          });
+              });
         } catch (err) {
           String message = "Error creating the event";
           if (err.message != null) {

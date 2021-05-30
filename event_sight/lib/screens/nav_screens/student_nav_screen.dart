@@ -1,9 +1,6 @@
 import "package:flutter/material.dart";
-import "package:badges/badges.dart";
-
 import '../student_home_screen.dart';
 import '../student_profile.dart';
-import "../../widgets/notifications.dart";
 import '../../widgets/drawers/student_drawer.dart';
 
 class StudentNavScreen extends StatefulWidget {
@@ -18,7 +15,6 @@ class _StudentNavScreenState extends State<StudentNavScreen> {
     {"page": StudentHomeScreen(), "title": "Event Sight"},
     {"page": StudentHomeScreen(), "title": ""},
     {"page": StudentHomeScreen(), "title": ""},
-    {"page": Notifications(), "title": ""},
     {"page": StudentProfile(), "title": "User Profile"},
   ];
   @override
@@ -45,16 +41,6 @@ class _StudentNavScreenState extends State<StudentNavScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.event), label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: ""),
-          BottomNavigationBarItem(
-              icon: Badge(
-                badgeColor: Color.fromRGBO(132, 0, 50, 1),
-                badgeContent: Text(
-                  "10",
-                  style: TextStyle(color: Colors.white),
-                ),
-                child: Icon(Icons.notifications),
-              ),
-              label: ""),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: ""),
         ],
       ),

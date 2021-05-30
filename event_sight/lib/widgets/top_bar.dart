@@ -1,23 +1,51 @@
 import "package:flutter/material.dart";
 
-class TopBar extends StatelessWidget {
+import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_auth/firebase_auth.dart";
+
+import "../screens/admin_home_screen.dart";
+
+class TopBar extends StatefulWidget {
+  @override
+  _TopBarState createState() => _TopBarState();
+}
+
+class _TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black12,
-      margin: EdgeInsets.all(5),
-      height: 90,
-      child: ListView(scrollDirection: Axis.horizontal, children: [
-        ...new List<int>.generate(2, (i) => i + 1)
-            .map((e) => TopBarItem(
-                "https://images.jdmagicbox.com/comp/chandigarh/c4/0172p1762.1762.110201201416.l1c4/catalogue/punjab-engineering-college-sector-12-chandigarh-placement-services-candidate--3er9sw3.jpg?clr=#006600"))
-            .toList(),
-        ...new List<int>.generate(5, (i) => i + 1)
-            .map((e) => TopBarItem(
-                "https://cdn.designrush.com/uploads/inspiration_images/4531/990__1511456189_555_McDonald's.png"))
-            .toList()
-      ]),
-    );
+        color: Colors.black12,
+        margin: EdgeInsets.all(5),
+        height: 90,
+        child: FutureBuilder(
+          future: FirebaseFirestore.instance
+              .collection("organisers")
+              .where("followers",
+                  arrayContains: FirebaseAuth.instance.currentUser.uid)
+              .get(),
+          builder: (ctx, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return LinearProgressIndicator(
+                backgroundColor: Color.fromRGBO(229, 149, 0, 1),
+              );
+            }
+            var organisers = snapshot.data.docs as List<dynamic>;
+            if (organisers.isEmpty) {
+              return Center(child: Text("Not following any Organiser"));
+            }
+            return ListView(
+              scrollDirection: Axis.horizontal,
+              children: organisers.map((organiser) {
+                return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(AdminHomeScreen.routeName,
+                          arguments: organiser["id"]);
+                    },
+                    child: TopBarItem(organiser["image_url"]));
+              }).toList(),
+            );
+          },
+        ));
   }
 }
 
