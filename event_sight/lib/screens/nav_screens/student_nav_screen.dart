@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 import '../student_home_screen.dart';
 import '../student_profile.dart';
 import '../../widgets/drawers/student_drawer.dart';
+import "../../widgets/interested_events.dart";
+import "../../widgets/registered_events.dart";
 
 class StudentNavScreen extends StatefulWidget {
   static const routeName = "/student-nav-screen";
@@ -13,8 +15,8 @@ class _StudentNavScreenState extends State<StudentNavScreen> {
   int _selectedIndex = 0;
   final _pages = [
     {"page": StudentHomeScreen(), "title": "Event Sight"},
-    {"page": StudentHomeScreen(), "title": ""},
-    {"page": StudentHomeScreen(), "title": ""},
+    {"page": RegisteredEvents(), "title": "Registered Events"},
+    {"page": InterestedEvents(), "title": "Interested Events"},
     {"page": StudentProfile(), "title": "User Profile"},
   ];
   @override

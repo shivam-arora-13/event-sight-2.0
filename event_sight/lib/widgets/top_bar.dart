@@ -25,9 +25,10 @@ class _TopBarState extends State<TopBar> {
               .get(),
           builder: (ctx, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
-              return LinearProgressIndicator(
+              return Center(
+                  child: CircularProgressIndicator(
                 backgroundColor: Color.fromRGBO(229, 149, 0, 1),
-              );
+              ));
             }
             var organisers = snapshot.data.docs as List<dynamic>;
             if (organisers.isEmpty) {

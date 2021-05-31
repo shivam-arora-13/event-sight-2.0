@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 
+import "../widgets/student_profile_components.dart";
+
 class StudentProfile extends StatefulWidget {
   @override
   _StudentProfileState createState() => _StudentProfileState();
@@ -118,38 +120,9 @@ class _UserClubsState extends State<UserClubs> {
           height: 10,
           color: Colors.black,
         ),
-        if (_index == 0) Text("List Of Membership clubs"),
-        if (_index == 1) Text("List Of Following clubs")
+        if (_index == 0) ClubLists("members"),
+        if (_index == 1) ClubLists("followers"),
       ],
-    );
-  }
-}
-
-class InfoTile extends StatelessWidget {
-  final _text;
-  final _icon;
-  InfoTile(this._text, this._icon);
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(
-        _icon,
-        size: 27,
-        color: Color.fromRGBO(0, 38, 66, 1),
-      ),
-      title: Container(
-        width: double.infinity,
-        height: 23,
-        child: FittedBox(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            _text,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

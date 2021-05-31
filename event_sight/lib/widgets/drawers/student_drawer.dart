@@ -3,7 +3,12 @@ import "package:shared_preferences/shared_preferences.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import '../../screens/organisers_list_screen.dart';
 
-class StudentDrawer extends StatelessWidget {
+class StudentDrawer extends StatefulWidget {
+  @override
+  _StudentDrawerState createState() => _StudentDrawerState();
+}
+
+class _StudentDrawerState extends State<StudentDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
