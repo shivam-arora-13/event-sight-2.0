@@ -24,8 +24,32 @@ class _RegisteredStudentsState extends State<RegisteredStudents> {
         if (registeredDetails.isEmpty) {
           return Center(child: Text("No Registered Students"));
         }
-        return Container(
-          child: Text("Hello"),
+        var studentIds = [];
+        registeredDetails.forEach((element) {
+          studentIds.add(element["student"]);
+        });
+        return FutureBuilder(
+          future: FirebaseFirestore.instance
+              .collection("students")
+              .where("id", whereIn: studentIds)
+              .get(),
+          builder: (ctx1, studentSnapshot) {
+            if (studentSnapshot.connectionState != ConnectionState.done) {
+              return Center(child: CircularProgressIndicator());
+            }
+            var students = studentSnapshot.data.docs as List<dynamic>;
+            return ListView.builder(
+              itemBuilder: (ctx2, i) {
+                return ListTile(
+                  leading: CircleAvatar(
+                      backgroundImage: NetworkImage(students[i]["image_url"])),
+                  title: Text(students[i]["name"]),
+                  subtitle: Text(students[i]["sid"]),
+                );
+              },
+              itemCount: students.length,
+            );
+          },
         );
       },
     );

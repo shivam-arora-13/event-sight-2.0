@@ -13,10 +13,10 @@ class OrganisersListScreen extends StatefulWidget {
 class _OrganisersListScreenState extends State<OrganisersListScreen> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: FirebaseFirestore.instance.collection("organisers").get(),
+    return StreamBuilder(
+        stream: FirebaseFirestore.instance.collection("organisers").snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(
               body: Container(
                 decoration: BoxDecoration(

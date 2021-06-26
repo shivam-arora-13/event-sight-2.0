@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 
 import "../widgets/event_info.dart";
 import "../widgets/registered_students.dart";
+import "./../widgets/event_actions_fab.dart";
 
 class EventScreen extends StatefulWidget {
   static const routeName = "/event";
@@ -24,6 +25,7 @@ class _EventScreenState extends State<EventScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        floatingActionButton: widget.isAdmin ? null : FAB(eventId),
         appBar: AppBar(
           title: Text("Event Sight"),
           actions: widget.isAdmin

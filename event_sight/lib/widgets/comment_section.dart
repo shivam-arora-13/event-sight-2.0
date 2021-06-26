@@ -11,41 +11,62 @@ class CommentSection extends StatefulWidget {
 }
 
 class _CommentSectionState extends State<CommentSection> {
+  bool showComments = false;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(children: [
-        Container(
-            height: 350,
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("comment")
-                  .where("eventId", isEqualTo: widget.eventId)
-                  .snapshots(),
-              builder: (ctx, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [CircularProgressIndicator()],
-                  );
-                }
+        ListTile(
+          onTap: () {
+            setState(() {
+              showComments = !showComments;
+            });
+          },
+          title: Text("Comments"),
+          trailing:
+              showComments ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+        ),
+        if (showComments)
+          AnimatedContainer(
+            height: showComments ? 500 : 0,
+            duration: Duration(seconds: 3),
+            child: Column(
+              children: [
+                Container(
+                    height: 350,
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("comment")
+                          .where("eventId", isEqualTo: widget.eventId)
+                          .snapshots(),
+                      builder: (ctx, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [CircularProgressIndicator()],
+                          );
+                        }
 
-                var comments = [];
-                comments = snapshot.data.docs as List<dynamic>;
-                //print(comments);
-                return ListView.builder(
-                    itemCount: comments.length,
-                    itemBuilder: (ctx, i) {
-                      return Comment(
-                        comments[i]["name"],
-                        comments[i]["img_url"],
-                        comments[i]["comment_text"],
-                      );
-                    });
-              },
-            )),
-        AddComment(widget.isAdmin, widget.eventId),
+                        var comments = [];
+                        comments = snapshot.data.docs as List<dynamic>;
+                        //print(comments);
+                        return ListView.builder(
+                            itemCount: comments.length,
+                            itemBuilder: (ctx, i) {
+                              return Comment(
+                                comments[i]["name"],
+                                comments[i]["img_url"],
+                                comments[i]["comment_text"],
+                              );
+                            });
+                      },
+                    )),
+                AddComment(widget.isAdmin, widget.eventId),
+              ],
+            ),
+          ),
       ]),
     );
   }

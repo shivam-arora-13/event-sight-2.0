@@ -36,7 +36,6 @@ class _EventInfoState extends State<EventInfo> {
                   eventInfo["time"],
                   eventInfo["details"],
                 ),
-                Divider(thickness: 1),
                 CommentSection(widget.isAdmin, widget.eventId),
               ],
             ),
