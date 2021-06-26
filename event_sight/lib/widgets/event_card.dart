@@ -200,7 +200,7 @@ class _EventCardState extends State<EventCard> {
             AnimatedContainer(
                 height: _isExpanded ? 60 : 0,
                 duration: Duration(milliseconds: 500),
-                child: AddComment()),
+                child: AddComment(false, widget.event.id)),
           Divider(
             thickness: 1.5,
           )

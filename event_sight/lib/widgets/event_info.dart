@@ -5,7 +5,8 @@ import "./comment_section.dart";
 
 class EventInfo extends StatefulWidget {
   final eventId;
-  EventInfo(this.eventId);
+  final bool isAdmin;
+  EventInfo(this.eventId, this.isAdmin);
   @override
   _EventInfoState createState() => _EventInfoState();
 }
@@ -36,7 +37,7 @@ class _EventInfoState extends State<EventInfo> {
                   eventInfo["details"],
                 ),
                 Divider(thickness: 1),
-                CommentSection(),
+                CommentSection(widget.isAdmin, widget.eventId),
               ],
             ),
           );

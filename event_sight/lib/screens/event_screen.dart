@@ -43,11 +43,11 @@ class _EventScreenState extends State<EventScreen> {
         body: widget.isAdmin
             ? TabBarView(
                 children: [
-                  EventInfo(eventId),
+                  EventInfo(eventId, widget.isAdmin),
                   Center(child: Text("Registered Students")),
                 ],
               )
-            : EventInfo(eventId),
+            : EventInfo(eventId, widget.isAdmin),
       ),
     );
   }
