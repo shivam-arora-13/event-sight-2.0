@@ -24,24 +24,17 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     }
   }
 
-  var flag = false;
-  void triggerChange() {
-    setState(() {
-      flag = !flag;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: FirebaseFirestore.instance
+    return StreamBuilder(
+        stream: FirebaseFirestore.instance
             .collection("organisers")
             .doc(widget.isAdmin
                 ? FirebaseAuth.instance.currentUser.uid
                 : organiserId)
-            .get(),
+            .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(
               body: Center(child: CircularProgressIndicator()),
             );
@@ -88,10 +81,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                           ),
                           if (!widget.isAdmin)
                             ClubButtons(
-                                organiserData["id"],
-                                organiserData["followers"],
-                                organiserData["members"],
-                                triggerChange),
+                              organiserData["id"],
+                              organiserData["followers"],
+                              organiserData["members"],
+                            ),
                         ],
                       ),
                     ),

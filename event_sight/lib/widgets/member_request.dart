@@ -11,14 +11,12 @@ class MemberRequest extends StatefulWidget {
   final sid;
   final email;
   final id;
-  final trigger;
   MemberRequest({
     @required this.imgUrl,
     @required this.name,
     @required this.sid,
     @required this.email,
     @required this.id,
-    @required this.trigger,
   });
 
   @override
@@ -53,17 +51,16 @@ class _MemberRequestState extends State<MemberRequest> {
           .where("organiser", isEqualTo: FirebaseAuth.instance.currentUser.uid)
           .get();
       final reqId = res.docs[0].id;
-      await FirebaseFirestore.instance
-          .collection("member_requests")
-          .doc(reqId)
-          .delete();
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: Duration(seconds: 2),
         content: Text("Member request accepted"),
         backgroundColor: Colors.green,
       ));
-      widget.trigger();
+      await FirebaseFirestore.instance
+          .collection("member_requests")
+          .doc(reqId)
+          .delete();
     } catch (err) {
       var message = "Error occured";
       if (err.message != null) {
@@ -92,18 +89,16 @@ class _MemberRequestState extends State<MemberRequest> {
           .where("organiser", isEqualTo: FirebaseAuth.instance.currentUser.uid)
           .get();
       final reqId = res.docs[0].id;
-      await FirebaseFirestore.instance
-          .collection("member_requests")
-          .doc(reqId)
-          .delete();
-
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: Duration(seconds: 2),
         content: Text("Member request rejected"),
         backgroundColor: Theme.of(context).errorColor,
       ));
-      widget.trigger();
+      await FirebaseFirestore.instance
+          .collection("member_requests")
+          .doc(reqId)
+          .delete();
     } catch (err) {
       var message = "Error occured";
       if (err.message != null) {

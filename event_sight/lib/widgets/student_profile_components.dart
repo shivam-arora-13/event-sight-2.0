@@ -43,14 +43,14 @@ class ClubLists extends StatefulWidget {
 class _ClubListsState extends State<ClubLists> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: FirebaseFirestore.instance
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
           .collection("organisers")
           .where(widget.type,
               arrayContains: FirebaseAuth.instance.currentUser.uid)
-          .get(),
+          .snapshots(),
       builder: (ctx, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
               child: LinearProgressIndicator(
             backgroundColor: Theme.of(context).primaryColor,

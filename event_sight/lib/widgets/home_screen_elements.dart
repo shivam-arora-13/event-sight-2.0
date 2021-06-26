@@ -67,9 +67,11 @@ class ClubButtons extends StatefulWidget {
   final organiserId;
   var followersList;
   var membersList;
-  final triggerChange;
-  ClubButtons(this.organiserId, this.followersList, this.membersList,
-      this.triggerChange);
+  ClubButtons(
+    this.organiserId,
+    this.followersList,
+    this.membersList,
+  );
 
   @override
   _ClubButtonsState createState() => _ClubButtonsState();
@@ -88,7 +90,6 @@ class _ClubButtonsState extends State<ClubButtons> {
             .collection("organisers")
             .doc(widget.organiserId)
             .update({"followers": widget.followersList});
-        widget.triggerChange();
       } else {
         await FirebaseFirestore.instance.collection("member_requests").add({
           "organiser": widget.organiserId,

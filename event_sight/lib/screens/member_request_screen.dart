@@ -9,13 +9,6 @@ class MemberRequestScreen extends StatefulWidget {
 }
 
 class _MemberRequestScreenState extends State<MemberRequestScreen> {
-  var flag = true;
-  void triggerChange() {
-    setState(() {
-      flag = !flag;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,14 +21,14 @@ class _MemberRequestScreenState extends State<MemberRequestScreen> {
                 Color.fromRGBO(132, 0, 50, 1),
               ]),
         ),
-        child: FutureBuilder(
-          future: FirebaseFirestore.instance
+        child: StreamBuilder(
+          stream: FirebaseFirestore.instance
               .collection("member_requests")
               .where("organiser",
                   isEqualTo: FirebaseAuth.instance.currentUser.uid)
-              .get(),
+              .snapshots(),
           builder: (ctx, snapshot) {
-            if (snapshot.connectionState != ConnectionState.done) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                   child: CircularProgressIndicator(
                       backgroundColor: Colors.yellow));
@@ -74,7 +67,6 @@ class _MemberRequestScreenState extends State<MemberRequestScreen> {
                       sid: mr["sid"],
                       email: mr["email"],
                       id: mr["id"],
-                      trigger: triggerChange,
                     );
                   }).toList(),
                 );

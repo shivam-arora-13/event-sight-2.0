@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "../widgets/event_info.dart";
+import "../widgets/registered_students.dart";
 
 class EventScreen extends StatefulWidget {
   static const routeName = "/event";
@@ -44,7 +45,7 @@ class _EventScreenState extends State<EventScreen> {
             ? TabBarView(
                 children: [
                   EventInfo(eventId, widget.isAdmin),
-                  Center(child: Text("Registered Students")),
+                  RegisteredStudents(eventId),
                 ],
               )
             : EventInfo(eventId, widget.isAdmin),

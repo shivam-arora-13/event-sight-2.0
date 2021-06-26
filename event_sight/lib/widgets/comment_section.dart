@@ -63,7 +63,7 @@ class _AddCommentState extends State<AddComment> {
   var commentController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   void submitComment(imgUrl, name, commentText) async {
-    //FocusScope.of(context).unfocus();
+    //
     final isValid = _formKey.currentState.validate();
     if (isValid) {
       await FirebaseFirestore.instance.collection("comment").add({
@@ -120,6 +120,7 @@ class _AddCommentState extends State<AddComment> {
               icon: Icon(Icons.send),
               color: Color.fromRGBO(132, 0, 50, 1),
               onPressed: () {
+                //FocusScope.of(ctx).unfocus();
                 submitComment(userData["image_url"], userData["name"],
                     commentController.text);
               },
