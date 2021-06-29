@@ -160,6 +160,21 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
                             var events =
                                 eventsSnapshot.data.docs as List<dynamic>;
+                            events.removeWhere((eve) {
+                              return ((eve["date"].substring(0, 10).compareTo(
+                                          DateTime.now()
+                                              .toIso8601String()
+                                              .substring(0, 10)) ==
+                                      -1) ||
+                                  ((eve["date"].substring(0, 10).compareTo(
+                                              DateTime.now()
+                                                  .toIso8601String()
+                                                  .substring(0, 10)) ==
+                                          0) &&
+                                      (eve["time"].compareTo(
+                                              TimeOfDay.now().toString()) ==
+                                          -1)));
+                            });
 
                             if (events.isEmpty) {
                               return Center(child: Text("No events to show"));

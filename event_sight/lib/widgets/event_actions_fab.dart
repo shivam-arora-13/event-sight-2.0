@@ -1,7 +1,9 @@
-import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import "package:firebase_auth/firebase_auth.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
+import 'package:flutter/rendering.dart';
+
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class FAB extends StatefulWidget {
   final eventId;
@@ -11,22 +13,25 @@ class FAB extends StatefulWidget {
   _FABState createState() => _FABState();
 }
 
-class _FABState extends State<FAB> with SingleTickerProviderStateMixin {
-  Animation<double> _animation;
-  AnimationController _animationController;
+class _FABState extends State<FAB> with TickerProviderStateMixin {
+  ScrollController scrollController;
+  bool dialVisible = true;
 
   @override
   void initState() {
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 260),
-    );
-
-    final curvedAnimation =
-        CurvedAnimation(curve: Curves.easeInOut, parent: _animationController);
-    _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
-
     super.initState();
+
+    scrollController = ScrollController()
+      ..addListener(() {
+        setDialVisible(scrollController.position.userScrollDirection ==
+            ScrollDirection.forward);
+      });
+  }
+
+  void setDialVisible(bool value) {
+    setState(() {
+      dialVisible = value;
+    });
   }
 
   void markInterested() async {
@@ -122,52 +127,193 @@ class _FABState extends State<FAB> with SingleTickerProviderStateMixin {
     });
   }
 
+  void markUninterested(id) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("interested")
+          .doc(id)
+          .delete();
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text("Removed from Interested"),
+        backgroundColor: Colors.red,
+      ));
+    } catch (err) {
+      var message = "Error occured";
+      if (err.message != null) {
+        message = err.message;
+      }
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).errorColor,
+      ));
+    }
+  }
+
+  void UnregisterEvent(id) async {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text("Cancel Registration ? "),
+            content: Text("Do you want to unregister from the event ?"),
+            actions: [
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  textColor: Colors.green,
+                  child: Text("Confirm")),
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  textColor: Colors.red,
+                  child: Text("Cancel")),
+            ],
+          );
+        }).then((confirm) async {
+      print(confirm);
+      if (confirm) {
+        //write code here
+        try {
+          await FirebaseFirestore.instance
+              .collection("registered")
+              .doc(id)
+              .delete();
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            duration: Duration(seconds: 2),
+            content: Text("Unregistered"),
+            backgroundColor: Colors.red,
+          ));
+        } catch (err) {
+          var message = "Error occured";
+          if (err.message != null) {
+            message = err.message;
+          }
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(message),
+            backgroundColor: Theme.of(context).errorColor,
+          ));
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FloatingActionBubble(
-      // Menu items
-      items: <Bubble>[
-        // Floating action menu item
-        Bubble(
-          title: "Register",
-          iconColor: Color.fromRGBO(229, 149, 0, 1),
-          bubbleColor: Theme.of(context).primaryColor,
-          icon: Icons.event,
-          titleStyle:
-              TextStyle(fontSize: 16, color: Color.fromRGBO(229, 149, 0, 1)),
-          onPress: registerEvent
-          //_animationController.reverse();
-          ,
+    return SpeedDial(
+      /// both default to 16
+      marginEnd: 18,
+      marginBottom: 20,
+      icon: Icons.ac_unit,
+      activeIcon: Icons.remove,
+
+      buttonSize: 56.0,
+      visible: true,
+
+      closeManually: false,
+      curve: Curves.bounceIn,
+      overlayColor: Theme.of(context).primaryColor,
+      overlayOpacity: 0.5,
+
+      backgroundColor: Color.fromRGBO(229, 149, 0, 1),
+      elevation: 8.0,
+      shape: CircleBorder(),
+      gradientBoxShape: BoxShape.circle,
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color.fromRGBO(229, 149, 0, 1),
+          Color.fromRGBO(229, 149, 0, 1),
+        ],
+      ),
+      children: [
+        SpeedDialChild(
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection("interested")
+                .where("event", isEqualTo: widget.eventId)
+                .where("student",
+                    isEqualTo: FirebaseAuth.instance.currentUser.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return IconButton(
+                    onPressed: markInterested,
+                    icon: Icon(
+                      Icons.bookmark_outline,
+                      color: Color.fromRGBO(229, 149, 0, 1),
+                    ));
+              }
+              if ((snapshot.data.docs as List<dynamic>).isNotEmpty) {
+                print((snapshot.data.docs as List<dynamic>).length);
+                return IconButton(
+                    onPressed: () {
+                      markUninterested(
+                          (snapshot.data.docs as List<dynamic>)[0].id);
+                    },
+                    icon: Icon(
+                      Icons.bookmark,
+                      color: Color.fromRGBO(229, 149, 0, 1),
+                    ));
+              }
+              return IconButton(
+                  onPressed: markInterested,
+                  icon: Icon(
+                    Icons.bookmark_outline,
+                    color: Color.fromRGBO(229, 149, 0, 1),
+                  ));
+            },
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
-        // Floating action menu item
-        Bubble(
-          title: "Interested",
-          iconColor: Color.fromRGBO(229, 149, 0, 1),
-          bubbleColor: Theme.of(context).primaryColor,
-          icon: Icons.bookmark_border,
-          titleStyle:
-              TextStyle(fontSize: 16, color: Color.fromRGBO(229, 149, 0, 1)),
-          onPress: markInterested
-          // _animationController.reverse();
-          ,
+        SpeedDialChild(
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection("registered")
+                .where("event", isEqualTo: widget.eventId)
+                .where("student",
+                    isEqualTo: FirebaseAuth.instance.currentUser.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return IconButton(
+                    onPressed: registerEvent,
+                    icon: Icon(
+                      Icons.event,
+                      color: Color.fromRGBO(229, 149, 0, 1),
+                    ));
+              }
+              if ((snapshot.data.docs as List<dynamic>).isNotEmpty) {
+                print((snapshot.data.docs as List<dynamic>).length);
+                return IconButton(
+                    onPressed: () {
+                      UnregisterEvent(
+                          (snapshot.data.docs as List<dynamic>)[0].id);
+                    },
+                    icon: Icon(
+                      Icons.event_available,
+                      color: Color.fromRGBO(229, 149, 0, 1),
+                    ));
+              }
+              return IconButton(
+                  onPressed: registerEvent,
+                  icon: Icon(
+                    Icons.event,
+                    color: Color.fromRGBO(229, 149, 0, 1),
+                  ));
+            },
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
-        //Floating action menu item
       ],
-
-      // animation controller
-      animation: _animation,
-
-      // On pressed change animation state
-      onPress: () => _animationController.isCompleted
-          ? _animationController.reverse()
-          : _animationController.forward(),
-
-      // Floating Action button Icon color
-      iconColor: Theme.of(context).primaryColor,
-
-      // Flaoting Action button Icon
-      iconData: Icons.ac_unit,
-      backGroundColor: Color.fromRGBO(229, 149, 0, 1),
     );
+    ;
   }
 }

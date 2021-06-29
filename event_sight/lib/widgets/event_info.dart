@@ -84,6 +84,7 @@ class _InfoColumnState extends State<InfoColumn> {
           duration: Duration(milliseconds: 500),
           height: _isExpanded[0] ? 500 : 0,
           padding: EdgeInsets.all(5),
+          width: MediaQuery.of(context).size.width - 10,
           child: Image.network(
             widget.posterUrl,
             fit: BoxFit.contain,

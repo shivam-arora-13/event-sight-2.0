@@ -14,7 +14,7 @@ class _TopBarState extends State<TopBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.black12,
+        color: Colors.white,
         margin: EdgeInsets.all(5),
         height: 90,
         child: FutureBuilder(

@@ -65,13 +65,7 @@ class _AdminLoginFormState extends State<AdminLoginForm> {
                       items: [
                         "Art and Photography Club",
                         "Music Club",
-                        "Dramatics Club",
                         "Speakers Association & Study Circle",
-                        "Projection and Design Club",
-                        "Hindi Editorial Board",
-                        "Punjabi Editorial Board",
-                        "American Society of Civil Engineers",
-                        "Solar Energy Society of India",
                       ].map((value) {
                         return DropdownMenuItem(
                           child: Container(

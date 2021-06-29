@@ -87,6 +87,16 @@ class _EventsLoaderState extends State<EventsLoader> {
         events.add(element);
       });
     }
+
+    events.removeWhere((eve) {
+      return ((eve["date"].substring(0, 10).compareTo(
+                  DateTime.now().toIso8601String().substring(0, 10)) ==
+              -1) ||
+          ((eve["date"].substring(0, 10).compareTo(
+                      DateTime.now().toIso8601String().substring(0, 10)) ==
+                  0) &&
+              (eve["time"].compareTo(TimeOfDay.now().toString()) == -1)));
+    });
   }
 
   @override
