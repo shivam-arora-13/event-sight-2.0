@@ -66,18 +66,48 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    ClubStat(
-                                        organiserData["members"]
-                                            .toSet()
-                                            .toList()
-                                            .length,
-                                        "Members"),
-                                    ClubStat(
-                                        organiserData["followers"]
-                                            .toSet()
-                                            .toList()
-                                            .length,
-                                        "Followers"),
+                                    GestureDetector(
+                                      onTap: widget.isAdmin
+                                          ? () {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                      builder: (ctx) {
+                                                return StudentsList(
+                                                    "members",
+                                                    organiserData["members"]
+                                                        .toSet()
+                                                        .toList());
+                                              }));
+                                            }
+                                          : null,
+                                      child: ClubStat(
+                                          organiserData["members"]
+                                              .toSet()
+                                              .toList()
+                                              .length,
+                                          "Members"),
+                                    ),
+                                    GestureDetector(
+                                      onTap: widget.isAdmin
+                                          ? () {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                      builder: (ctx) {
+                                                return StudentsList(
+                                                    "followers",
+                                                    organiserData["followers"]
+                                                        .toSet()
+                                                        .toList());
+                                              }));
+                                            }
+                                          : null,
+                                      child: ClubStat(
+                                          organiserData["followers"]
+                                              .toSet()
+                                              .toList()
+                                              .length,
+                                          "Followers"),
+                                    ),
                                   ],
                                 ),
                               )
@@ -102,13 +132,26 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                           ? MediaQuery.of(context).size.height * 0.55
                           : MediaQuery.of(context).size.height * 0.50,
                       child: StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection("events")
-                              .where("organiser",
-                                  isEqualTo: widget.isAdmin
-                                      ? FirebaseAuth.instance.currentUser.uid
-                                      : organiserId)
-                              .snapshots(),
+                          stream: (widget.isAdmin ||
+                                  organiserData["members"].contains(
+                                      FirebaseAuth.instance.currentUser.uid))
+                              ? FirebaseFirestore.instance
+                                  .collection("events")
+                                  .where("organiser",
+                                      isEqualTo: widget.isAdmin
+                                          ? FirebaseAuth
+                                              .instance.currentUser.uid
+                                          : organiserId)
+                                  .snapshots()
+                              : FirebaseFirestore.instance
+                                  .collection("events")
+                                  .where("organiser",
+                                      isEqualTo: widget.isAdmin
+                                          ? FirebaseAuth
+                                              .instance.currentUser.uid
+                                          : organiserId)
+                                  .where("open_to_all", isEqualTo: true)
+                                  .snapshots(),
                           builder: (ctx, eventsSnapshot) {
                             if (eventsSnapshot.connectionState ==
                                 ConnectionState.waiting) {

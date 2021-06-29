@@ -316,3 +316,51 @@ class ClubInfo extends StatelessWidget {
     );
   }
 }
+
+class StudentsList extends StatefulWidget {
+  final String type;
+  final list;
+  StudentsList(this.type, this.list);
+  @override
+  _StudentsListState createState() => _StudentsListState();
+}
+
+class _StudentsListState extends State<StudentsList> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+            title: Text(widget.type == "followers"
+                ? "Followers List"
+                : "Members List")),
+        body: widget.list.isEmpty
+            ? Center(
+                child: Text("No ${widget.type}"),
+              )
+            : StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("students")
+                    .where("id", whereIn: widget.list)
+                    .snapshots(),
+                builder: (ctx, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  final students = snapshot.data.docs as List<dynamic>;
+                  return ListView.builder(
+                    itemBuilder: (ctx, i) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(students[i]["image_url"]),
+                        ),
+                        title: Text(students[i]["name"]),
+                        subtitle: Text(students[i]["sid"]),
+                      );
+                    },
+                    itemCount: students.length,
+                  );
+                },
+              ));
+  }
+}
