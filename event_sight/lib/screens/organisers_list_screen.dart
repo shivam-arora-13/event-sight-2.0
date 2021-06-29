@@ -62,8 +62,8 @@ class _OrganisersListScreenState extends State<OrganisersListScreen> {
                     organiser["name"],
                     organiser["description"],
                     organiser["image_url"],
-                    organiser["followers"].length,
-                    organiser["members"].length,
+                    organiser["followers"].toSet().toList().length,
+                    organiser["members"].toSet().toList().length,
                   ),
                 );
               }).toList()),

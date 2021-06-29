@@ -157,11 +157,15 @@ class _InfoColumnState extends State<InfoColumn> {
                 ? Icon(Icons.expand_less)
                 : Icon(Icons.expand_more)),
         AnimatedContainer(
+          alignment: Alignment.topLeft,
           padding: EdgeInsets.all(10),
           duration: Duration(milliseconds: 500),
-          height: _isExpanded[2] ? 200 : 0,
+          height: _isExpanded[2] ? 150 : 0,
           child: SingleChildScrollView(
-            child: Text(widget.details),
+            child: Text(
+              widget.details,
+              textAlign: TextAlign.left,
+            ),
           ),
         ),
       ],

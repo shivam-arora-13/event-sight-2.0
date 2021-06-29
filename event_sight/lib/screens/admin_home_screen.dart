@@ -66,9 +66,17 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    ClubStat(organiserData["members"].length,
+                                    ClubStat(
+                                        organiserData["members"]
+                                            .toSet()
+                                            .toList()
+                                            .length,
                                         "Members"),
-                                    ClubStat(organiserData["followers"].length,
+                                    ClubStat(
+                                        organiserData["followers"]
+                                            .toSet()
+                                            .toList()
+                                            .length,
                                         "Followers"),
                                   ],
                                 ),

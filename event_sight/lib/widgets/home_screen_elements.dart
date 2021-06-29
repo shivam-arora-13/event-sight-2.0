@@ -120,6 +120,52 @@ class _ClubButtonsState extends State<ClubButtons> {
     });
   }
 
+  void removeStudent(String type, BuildContext context) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      if (type == "followers") {
+        (widget.followersList).removeWhere(
+            (element) => element == (FirebaseAuth.instance.currentUser.uid));
+        print(widget.followersList);
+        await FirebaseFirestore.instance
+            .collection("organisers")
+            .doc(widget.organiserId)
+            .update({"followers": widget.followersList});
+      }
+      if (type == "members") {
+        (widget.membersList).removeWhere(
+            (element) => element == (FirebaseAuth.instance.currentUser.uid));
+        await FirebaseFirestore.instance
+            .collection("organisers")
+            .doc(widget.organiserId)
+            .update({"members": widget.membersList});
+      }
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 2),
+        content:
+            Text(type == "followers" ? "Unfollowed" : "Membership cancelled"),
+        backgroundColor: Colors.red,
+      ));
+    } catch (err) {
+      var message = "Error occured";
+      if (err.message != null) {
+        message = err.message;
+      }
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text(message),
+        backgroundColor: Theme.of(context).errorColor,
+      ));
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -131,32 +177,102 @@ class _ClubButtonsState extends State<ClubButtons> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(
-                width: 170,
-                child: RaisedButton(
-                  onPressed: isLoading
-                      ? null
-                      : () {
-                          addStudent("followers", context);
-                        },
-                  child: Text("Follow"),
-                  color: Color.fromRGBO(229, 149, 0, 1),
+              if (!widget.membersList
+                  .contains(FirebaseAuth.instance.currentUser.uid))
+                SizedBox(
+                  width: 170,
+                  child: RaisedButton(
+                    onPressed: isLoading
+                        ? null
+                        : (widget.followersList
+                                .contains(FirebaseAuth.instance.currentUser.uid)
+                            ? () {
+                                removeStudent("followers", context);
+                              }
+                            : () {
+                                addStudent("followers", context);
+                              }),
+                    child: widget.followersList
+                            .contains(FirebaseAuth.instance.currentUser.uid)
+                        ? Text("Unfollow")
+                        : Text("Follow"),
+                    color: widget.followersList
+                            .contains(FirebaseAuth.instance.currentUser.uid)
+                        ? Color.fromRGBO(132, 0, 50, 1)
+                        : Color.fromRGBO(229, 149, 0, 1),
+                    textColor: widget.followersList
+                            .contains(FirebaseAuth.instance.currentUser.uid)
+                        ? Colors.white
+                        : Colors.black,
+                  ),
                 ),
-              ),
-              SizedBox(width: 20),
-              SizedBox(
-                width: 170,
-                child: RaisedButton(
-                  onPressed: isLoading
-                      ? null
-                      : () {
-                          addStudent("members", context);
-                        },
-                  textColor: Colors.white,
-                  child: Text("Request Membership"),
-                  color: Color.fromRGBO(0, 38, 66, 1),
+              if (!widget.membersList
+                  .contains(FirebaseAuth.instance.currentUser.uid))
+                SizedBox(width: 20),
+              if (widget.membersList
+                  .contains(FirebaseAuth.instance.currentUser.uid))
+                SizedBox(
+                  width: 340,
+                  child: RaisedButton(
+                      onPressed: isLoading
+                          ? null
+                          : (() {
+                              removeStudent("members", context);
+                            }),
+                      textColor: Colors.white,
+                      child: Text("Cancel Membership"),
+                      color: Color.fromRGBO(132, 0, 50, 1)),
                 ),
-              ),
+              if (!widget.membersList
+                  .contains(FirebaseAuth.instance.currentUser.uid))
+                StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("member_requests")
+                        .where("organiser", isEqualTo: widget.organiserId)
+                        .where("students",
+                            isEqualTo: FirebaseAuth.instance.currentUser.uid)
+                        .snapshots(),
+                    builder: (ctx, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox(
+                            width: 170,
+                            child: RaisedButton(
+                              onPressed: isLoading
+                                  ? null
+                                  : (() {
+                                      addStudent("members", context);
+                                    }),
+                              textColor: Colors.white,
+                              child: Text("Request Membership"),
+                              color: Theme.of(context).primaryColor,
+                            ));
+                      }
+                      if ((snapshot.data.docs as List<dynamic>).isEmpty) {
+                        return SizedBox(
+                          width: 170,
+                          child: RaisedButton(
+                            onPressed: isLoading
+                                ? null
+                                : (() {
+                                    addStudent("members", context);
+                                  }),
+                            textColor: Colors.white,
+                            child: Text("Request Membership"),
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        );
+                      }
+                      return SizedBox(
+                        width: 170,
+                        child: RaisedButton(
+                          onPressed: null,
+                          textColor: Colors.white,
+                          child: Text("Member Requested"),
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      );
+                      ;
+                    })
             ],
           ),
         ],
