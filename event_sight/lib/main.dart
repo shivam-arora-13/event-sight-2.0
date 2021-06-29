@@ -11,6 +11,7 @@ import './screens/nav_screens/student_nav_screen.dart';
 import "./screens/nav_screens/admin_nav_screen.dart";
 import "./screens/organisers_list_screen.dart";
 import "./screens/admin_home_screen.dart";
+import "./screens/event_edit_screen.dart";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,7 +72,8 @@ class MyApp extends StatelessWidget {
           StudentNavScreen.routeName: (ctx) => StudentNavScreen(),
           OrganisersListScreen.routeName: (ctx) => OrganisersListScreen(),
           AdminNavScreen.routeName: (ctx) => AdminNavScreen(isAdmin),
-          AdminHomeScreen.routeName: (ctx) => AdminHomeScreen(isAdmin)
+          AdminHomeScreen.routeName: (ctx) => AdminHomeScreen(isAdmin),
+          EventEditScreen.routeName: (ctx) => EventEditScreen()
         },
       ),
     );

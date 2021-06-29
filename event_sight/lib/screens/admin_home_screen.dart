@@ -93,17 +93,17 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                       height: widget.isAdmin
                           ? MediaQuery.of(context).size.height * 0.55
                           : MediaQuery.of(context).size.height * 0.50,
-                      child: FutureBuilder(
-                          future: FirebaseFirestore.instance
+                      child: StreamBuilder(
+                          stream: FirebaseFirestore.instance
                               .collection("events")
                               .where("organiser",
                                   isEqualTo: widget.isAdmin
                                       ? FirebaseAuth.instance.currentUser.uid
                                       : organiserId)
-                              .get(),
+                              .snapshots(),
                           builder: (ctx, eventsSnapshot) {
-                            if (eventsSnapshot.connectionState !=
-                                ConnectionState.done) {
+                            if (eventsSnapshot.connectionState ==
+                                ConnectionState.waiting) {
                               return Center(child: CircularProgressIndicator());
                             }
 

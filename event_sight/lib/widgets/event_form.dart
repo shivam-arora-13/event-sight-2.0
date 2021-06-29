@@ -77,7 +77,7 @@ class _EventFormState extends State<EventForm> {
         builder: (ctx) {
           return AlertDialog(
             title: Text("Create Event ?"),
-            content: Text("Do you want to create the event ${title}"),
+            content: Text("Do you want to create the event ${title} ?"),
             actions: [
               FlatButton(
                   textColor: Colors.green,
@@ -262,7 +262,7 @@ class _EventFormState extends State<EventForm> {
                       alignment: Alignment.centerLeft,
                       child: Column(
                         children: [
-                          DateTimePicker(_submitDateTime),
+                          DateTimePicker(submit: _submitDateTime),
                           SizedBox(height: 15),
                           TextFormField(
                             controller: detailsController,

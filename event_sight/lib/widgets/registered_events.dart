@@ -11,13 +11,13 @@ class RegisteredEvents extends StatefulWidget {
 class _RegisteredEventsState extends State<RegisteredEvents> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: FirebaseFirestore.instance
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
           .collection("registered")
           .where("student", isEqualTo: FirebaseAuth.instance.currentUser.uid)
-          .get(),
+          .snapshots(),
       builder: (ctx, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
         var registeredEvents = snapshot.data.docs as List<dynamic>;

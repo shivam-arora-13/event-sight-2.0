@@ -4,8 +4,14 @@ import "package:flutter/material.dart";
 import "package:image_picker/image_picker.dart";
 
 class DateTimePicker extends StatefulWidget {
-  final _submit;
-  DateTimePicker(this._submit);
+  final submit;
+  var intial_date = null;
+  var initial_time = null;
+  DateTimePicker({
+    @required this.submit,
+    this.intial_date,
+    this.initial_time,
+  });
   @override
   _DateTimePickerState createState() => _DateTimePickerState();
 }
@@ -14,8 +20,17 @@ class _DateTimePickerState extends State<DateTimePicker> {
   var _selectedDate;
   var _selectedTime;
   var _selectedTimeString;
+  bool flag = true;
   @override
   Widget build(BuildContext context) {
+    if (widget.intial_date != null && flag) {
+      _selectedDate = DateTime.parse(widget.intial_date);
+      _selectedTime = TimeOfDay(
+          hour: int.parse(widget.initial_time.substring(10, 12)),
+          minute: int.parse(widget.initial_time.substring(13, 15)));
+      _selectedTimeString = widget.initial_time;
+      flag = false;
+    }
     return Container(
         child: Row(
       children: [
@@ -34,7 +49,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
                 _selectedDate = pickedDate;
               });
               if (_selectedDate != null && _selectedTime != null) {
-                widget._submit(_selectedDate, _selectedTimeString);
+                widget.submit(_selectedDate, _selectedTimeString);
               }
             });
           },
@@ -58,7 +73,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
                 _selectedTimeString = formattedTimeOfDay;
               });
               if (_selectedDate != null && _selectedTime != null) {
-                widget._submit(_selectedDate, _selectedTime);
+                widget.submit(_selectedDate, _selectedTime);
               }
             });
           },

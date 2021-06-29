@@ -14,13 +14,13 @@ class EventInfo extends StatefulWidget {
 class _EventInfoState extends State<EventInfo> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: FirebaseFirestore.instance
+    return StreamBuilder(
+        stream: FirebaseFirestore.instance
             .collection("events")
             .doc(widget.eventId)
-            .get(),
+            .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
           var eventInfo = snapshot.data;
